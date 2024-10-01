@@ -1,0 +1,25 @@
+# pages/signup.py
+import streamlit as st
+from config import USER_CREDENTIALS, hash_password, add_user
+
+def signup_page():
+    st.subheader('Sign Up')
+    username = st.text_input('Username')
+    password = st.text_input('Password', type='password')
+    confirm_password = st.text_input('Confirm Password', type='password')
+
+    if st.button('Sign Up'):
+        if password != confirm_password:
+            st.error('Passwords do not match')
+        elif username in USER_CREDENTIALS:
+            st.error('Username already exists')
+        else:
+            add_user(username, password)
+            st.success('Account created successfully! You can now log in.')
+            st.session_state.page = "Login"
+            st.session_state.flag = True  # Trigger page reload
+
+    # Redirect if the flag is set
+    if 'flag' in st.session_state and st.session_state.flag:
+        st.session_state.flag = False
+        st.rerun()  # Refresh to show the updated page
